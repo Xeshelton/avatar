@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AVADIA Testzugang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* Bewusst einthemig: übernimmt das bestehende Zentrum-Moyland/AVADIA-Farbsystem 1:1,
+     damit Dashboard und Testzugang wie ein Produkt wirken. */
+  :root{
+    --bg:#E8F1F5;
+    --surface:#FFFFFF;
+    --surface-alt:#EAF1EE;
+    --ink:#22302D;
+    --ink-soft:#3E4E4A;
+    --ink-faint:#5F716B;
+    --petrol:#1F5B62;
+    --petrol-deep:#153F44;
+    --petrol-soft:#D3E4E2;
+    --sage:#6E9179;
+    --sage-soft:#DEEAE1;
+    --sage-light:#A8C7B3;
+    --amber:#B0703E;
+    --amber-soft:#F1E1D2;
+    --line:#D7E4EA;
+    --on-dark:#EAF3EF;
+    --on-dark-soft:#B9CFC7;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(21,63,68,0.05), 0 10px 28px rgba(21,63,68,0.06);
+    --shadow-raised:0 2px 4px rgba(21,63,68,0.08), 0 16px 32px rgba(21,63,68,0.12);
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--bg);}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;
+    padding:40px 0 0;overflow-x:hidden;
+  }
+  .wrap{max-width:960px;margin:0 auto;padding:0 32px;}
+
+  /* Header, Sonnen-Animation wie im Dashboard */
+  .header-deco{position:relative;height:58px;margin-bottom:44px;overflow:visible;}
+  .header-path{position:absolute;inset:0;width:100%;height:100%;opacity:0.6;pointer-events:none;}
+  .brand{display:flex;align-items:center;gap:13px;position:relative;z-index:2;height:100%;}
+  .sun-wrap{position:absolute;opacity:0;pointer-events:none;z-index:3;transition:opacity 0.4s ease;}
+  .sun-wrap.visible{opacity:1;}
+  .sun-wrap.glow .sun{filter:drop-shadow(0 0 8px rgba(242,183,5,0.7)) drop-shadow(0 0 20px rgba(242,183,5,0.4));}
+  .sun-wrap.pulse{animation:sun-pulse 2.6s ease-in-out infinite;}
+  @keyframes sun-pulse{0%,100%{transform:scale(1);} 50%{transform:scale(1.1);}}
+  .sun-wrap .sun{width:100%;height:100%;display:block;}
+  .rays{transform-origin:12px 12px;animation:spin 7s linear infinite;}
+  @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+  .orb{
+    width:42px;height:42px;border-radius:50%;flex-shrink:0;cursor:pointer;
+    background:radial-gradient(circle at 32% 28%, var(--sage-light) 0%, var(--sage) 34%, var(--petrol) 68%, var(--petrol-deep) 100%);
+    box-shadow:var(--shadow);
+  }
+  .brandname{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:500;
+    letter-spacing:0.04em;color:var(--petrol-deep);
+  }
+  .brandname span{color:var(--ink-faint);font-weight:400;font-size:12px;letter-spacing:0.08em;
+    text-transform:uppercase;display:block;margin-top:1px;
+  }
+  .logout{
+    position:absolute;right:0;top:50%;transform:translateY(-50%);
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.05em;color:var(--ink-faint);
+    background:none;border:none;cursor:pointer;text-decoration:underline;padding:4px;
+  }
+
+  /* Hero */
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.12em;
+    text-transform:uppercase;color:var(--petrol);margin:0 0 10px;font-weight:600;
+  }
+  h1{font-family:'Newsreader',serif;font-weight:500;font-size:38px;line-height:1.18;
+    margin:0 0 14px;color:var(--petrol-deep);letter-spacing:-0.01em;text-wrap:balance;
+  }
+  .sub{color:var(--ink-soft);font-size:16px;line-height:1.6;margin:0 0 40px;max-width:520px;}
+
+  /* Panel */
+  .panel{
+    background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--petrol);
+    border-radius:var(--radius);box-shadow:var(--shadow);padding:26px 28px;
+  }
+  .panel h2{font-family:'Newsreader',serif;font-weight:500;font-size:19px;margin:0 0 12px;color:var(--petrol-deep);}
+  .panel p{font-size:14.5px;line-height:1.7;color:var(--ink-soft);margin:0 0 12px;max-width:640px;}
+  .panel p:last-child{margin-bottom:0;}
+
+  /* Statkacheln */
+  .statusbar{display:flex;flex-wrap:wrap;gap:14px;margin:28px 0 0;}
+  .stat{
+    background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--petrol);
+    border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px;
+    flex:1 1 170px;min-width:150px;
+  }
+  .stat .label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.08em;
+    text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px;font-weight:600;
+  }
+  .stat .value{font-size:15.5px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;}
+
+  /* Wellenübergang in den dunklen Bereich */
+  .wave-scene{position:relative;width:100%;margin-top:34px;}
+  .wave-scene svg{display:block;width:100%;height:260px;}
+  .dark-fill{background:var(--petrol-deep);margin-top:-2px;}
+  .dark-inner{max-width:960px;margin:0 auto;padding:0 32px 46px;}
+
+  /* CTA, überlappt bewusst die Welle wie die Panels im Dashboard */
+  .cta-panel{
+    position:relative;z-index:2;margin-top:-150px;
+    background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--petrol);
+    border-radius:var(--radius);box-shadow:var(--shadow-raised);padding:44px 40px;text-align:center;
+  }
+  .limit-note{font-size:13px;color:var(--ink-faint);margin:0 0 20px;line-height:1.6;}
+  .btn{
+    font-family:'Inter',sans-serif;font-weight:600;font-size:15px;color:#fff;
+    background:var(--petrol);border:none;border-radius:999px;padding:14px 30px;
+    cursor:pointer;box-shadow:var(--shadow);transition:background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .btn:hover{background:var(--petrol-deep);transform:translateY(-2px);box-shadow:var(--shadow-raised);}
+  .btn:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+  .btn:focus-visible{outline:2px solid var(--petrol-deep);outline-offset:3px;}
+  .btn-ghost{
+    font-family:'Inter',sans-serif;font-weight:600;font-size:14px;color:var(--petrol-deep);
+    background:transparent;border:1px solid var(--line);border-radius:999px;padding:11px 24px;
+    cursor:pointer;transition:background 0.18s ease;
+  }
+  .btn-ghost:hover{background:var(--surface-alt);}
+  .btn-ghost:focus-visible{outline:2px solid var(--petrol-deep);outline-offset:3px;}
+
+  .call-frame{display:none;}
+  .call-frame.active{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:340px;}
+  .cta-idle.hidden{display:none;}
+  .orb-lg{
+    width:140px;height:140px;border-radius:50%;margin:0 auto 28px;
+    background:radial-gradient(circle at 32% 28%, var(--sage-light) 0%, var(--sage) 34%, var(--petrol) 68%, var(--petrol-deep) 100%);
+    box-shadow:0 0 0 12px var(--petrol-soft), var(--shadow-raised);
+  }
+  @media (prefers-reduced-motion: no-preference){.orb-lg.pulse{animation:orb-pulse 2.2s ease-in-out infinite;}}
+  @keyframes orb-pulse{
+    0%,100%{transform:scale(1);box-shadow:0 0 0 8px var(--petrol-soft), var(--shadow-raised);}
+    50%{transform:scale(1.05);box-shadow:0 0 0 14px var(--petrol-soft), var(--shadow-raised);}
+  }
+  .call-status{font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:0.06em;
+    text-transform:uppercase;color:var(--petrol);margin:0 0 8px;font-weight:600;
+  }
+  .call-msg{font-size:15.5px;color:var(--ink-soft);line-height:1.65;margin:0 0 26px;max-width:460px;margin-left:auto;margin-right:auto;}
+  .preview-tag{
+    display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.08em;
+    text-transform:uppercase;background:var(--amber-soft);color:var(--amber);padding:4px 11px;
+    border-radius:20px;margin-bottom:14px;font-weight:600;
+  }
+  .error-tag{
+    display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.08em;
+    text-transform:uppercase;background:#F1D2D2;color:#8C3A3A;padding:4px 11px;
+    border-radius:20px;margin-bottom:14px;font-weight:600;
+  }
+
+  footer{text-align:center;}
+  footer p{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.05em;color:var(--on-dark-soft);margin:0;line-height:1.7;}
+  footer .credit{color:var(--on-dark);font-weight:500;}
+
+  @media (max-width:520px){
+    h1{font-size:30px;}
+    .panel{padding:22px 20px;}
+    .cta-panel{padding:26px 20px;margin-top:-110px;}
+    .wave-scene svg{height:190px;}
+    .logout{position:static;display:block;margin-top:10px;text-align:right;transform:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="header-deco">
+    <svg class="header-path" viewBox="0 0 660 58" preserveAspectRatio="none">
+      <path d="M 40 28 Q 200 8 340 26 T 620 20" fill="none" stroke="var(--petrol-soft)" stroke-width="2"/>
+      <path d="M 40 36 Q 210 52 360 32 T 620 34" fill="none" stroke="var(--sage-soft)" stroke-width="2"/>
+    </svg>
+    <div class="brand">
+      <div class="sun-wrap" id="sunWrap">
+        <svg class="sun" viewBox="0 0 24 24" width="100%" height="100%">
+          <g class="rays" stroke="#E8A33D" stroke-width="2" stroke-linecap="round">
+            <line x1="12" y1="1" x2="12" y2="4"/>
+            <line x1="12" y1="20" x2="12" y2="23"/>
+            <line x1="1" y1="12" x2="4" y2="12"/>
+            <line x1="20" y1="12" x2="23" y2="12"/>
+            <line x1="4.2" y1="4.2" x2="6.3" y2="6.3"/>
+            <line x1="17.7" y1="17.7" x2="19.8" y2="19.8"/>
+            <line x1="4.2" y1="19.8" x2="6.3" y2="17.7"/>
+            <line x1="17.7" y1="6.3" x2="19.8" y2="4.2"/>
+          </g>
+          <circle cx="12" cy="12" r="4.4" fill="#F2B705"/>
+          <circle cx="10.3" cy="11" r="0.6" fill="#7A4A12"/>
+          <circle cx="13.7" cy="11" r="0.6" fill="#7A4A12"/>
+          <path d="M10 13.2 Q12 15 14 13.2" stroke="#7A4A12" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="orb" id="logoTrigger"></div>
+      <div class="brandname">AVADIA<span>Testzugang</span></div>
+    </div>
+    <form method="POST" action="/logout" style="display:inline;">
+      <button type="submit" class="logout">Abmelden</button>
+    </form>
+  </div>
+
+  <p class="eyebrow">AVADIA · Vorbereitendes Gespräch</p>
+  <h1>Führen Sie ein erstes Gespräch mit AVADIA</h1>
+  <p class="sub">So könnte ein Vorabgespräch aussehen, bevor es zu einem echten Fachtermin kommt, aufmerksam und ohne Wertung, ganz in Ihrem eigenen Tempo.</p>
+
+  <div class="panel">
+    <h2>Worum es hier geht</h2>
+    <p>AVADIA ist ein KI-gestützter Gesprächsavatar, der zuhört, gezielt nachfragt und Zusammenhänge erkennt. Ziel ist es, in einem einfühlsamen Gespräch Informationen zu sammeln, die einer Fachkraft bei der Einschätzung Ihrer Situation helfen können, ähnlich wie ein Vorabgespräch vor einem persönlichen Termin.</p>
+    <p>In diesem Testzugang können Sie selbst mit AVADIA sprechen und erleben, wie sich ein solches Gespräch anfühlt. Es handelt sich dabei nicht um eine Diagnose, sondern um eine Vorbereitung für das persönliche Gespräch mit der Fachkraft.</p>
+  </div>
+
+  <div class="statusbar">
+    <div class="stat">
+      <div class="label">Thema dieses Tests</div>
+      <div class="value">Alltag &amp; innere Balance</div>
+    </div>
+    <div class="stat">
+      <div class="label">Gesprächsdauer</div>
+      <div class="value">max. 12 Minuten</div>
+    </div>
+    <div class="stat">
+      <div class="label">Bereits geführt</div>
+      <div class="value" id="conductedText">– Testgespräche</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="wave-scene">
+  <svg viewBox="0 0 1200 320" preserveAspectRatio="none">
+    <path d="M0,130 C350,180 850,80 1200,140 L1200,320 L0,320 Z" fill="var(--sage)"/>
+    <path d="M0,190 C300,150 900,230 1200,180 L1200,320 L0,320 Z" fill="var(--petrol-deep)"/>
+  </svg>
+</div>
+
+<div class="dark-fill">
+  <div class="dark-inner">
+
+    <div class="cta-panel">
+      <div class="cta-idle" id="ctaIdle">
+        <p class="limit-note">Ein Gespräch dauert maximal 12 Minuten und wird danach automatisch beendet. Die Anzahl der Testgespräche pro Tag ist begrenzt, damit möglichst viele Interessierte einen Platz bekommen.</p>
+        <button class="btn" id="startBtn" type="button">Gespräch mit AVADIA starten</button>
+      </div>
+
+      <div class="call-frame" id="callFrame">
+        <div class="orb-lg pulse" id="callOrb"></div>
+        <p class="call-status" id="callStatus">Verbindung wird aufgebaut …</p>
+        <p class="call-msg" id="callMsg">Einen Moment, AVADIA meldet sich gleich.</p>
+      </div>
+    </div>
+
+    <footer>
+      <p class="credit">Entwickelt von Marvelous Software Solutions</p>
+      <p>Dieser Testzugang dient ausschließlich der Vorbereitung eines persönlichen Gesprächs mit der Fachkraft und stellt keine Diagnose dar.</p>
+    </footer>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  var conductedText = document.getElementById('conductedText');
+  var ctaIdle = document.getElementById('ctaIdle');
+  var callFrame = document.getElementById('callFrame');
+  var startBtn = document.getElementById('startBtn');
+  var callStatus = document.getElementById('callStatus');
+  var callMsg = document.getElementById('callMsg');
+  var callOrb = document.getElementById('callOrb');
+
+  function renderConducted(n){
+    conductedText.textContent = n + ' Testgespräche';
+  }
+
+  // Echten, dauerhaften Zählerstand vom Server holen, bleibt nach Neuladen erhalten.
+  fetch('/api/stats')
+    .then(function(r){ return r.json(); })
+    .then(function(data){ renderConducted(data.conducted); })
+    .catch(function(){ conductedText.textContent = '– Testgespräche'; });
+
+  startBtn.addEventListener('click', function(){
+    startBtn.disabled = true;
+    ctaIdle.classList.add('hidden');
+    callFrame.classList.add('active');
+    callStatus.textContent = 'Verbindung wird aufgebaut …';
+    callMsg.textContent = 'Einen Moment, AVADIA meldet sich gleich.';
+    callOrb.classList.add('pulse');
+
+    fetch('/api/start-conversation', { method: 'POST' })
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if (typeof data.conducted === 'number') renderConducted(data.conducted);
+
+        if (data.status === 'ok' && data.conversation_url) {
+          // Sobald Persona/Replica konfiguriert sind, landet das echte Gespräch hier.
+          window.location.href = data.conversation_url;
+          return;
+        }
+
+        if (data.status === 'not_configured') {
+          callStatus.textContent = 'Vorschau-Modus';
+          callMsg.innerHTML = '<span class="preview-tag">Design-Vorschau</span><br>Hier erscheint in der finalen Version das Live-Gespräch mit AVADIA. Zugriffsschutz, Zähler und API-Schlüssel funktionieren bereits echt, nur die Verbindung zu AVADIA selbst ist auf diesem Server noch nicht fertig eingerichtet.';
+        } else {
+          callStatus.textContent = 'Verbindung fehlgeschlagen';
+          callMsg.innerHTML = '<span class="error-tag">Fehler</span><br>' + (data.message || 'Bitte versuchen Sie es später erneut.');
+        }
+        callOrb.classList.remove('pulse');
+        showEndButton();
+      })
+      .catch(function(){
+        callStatus.textContent = 'Verbindung fehlgeschlagen';
+        callMsg.innerHTML = '<span class="error-tag">Fehler</span><br>Der Server war nicht erreichbar. Bitte versuchen Sie es später erneut.';
+        callOrb.classList.remove('pulse');
+        showEndButton();
+      });
+  });
+
+  function showEndButton(){
+    var endBtn = document.createElement('button');
+    endBtn.className = 'btn-ghost';
+    endBtn.type = 'button';
+    endBtn.textContent = 'Testgespräch beenden';
+    endBtn.style.marginTop = '4px';
+    endBtn.addEventListener('click', function(){
+      callFrame.classList.remove('active');
+      callFrame.removeChild(endBtn);
+      ctaIdle.classList.remove('hidden');
+      startBtn.disabled = false;
+    });
+    callFrame.appendChild(endBtn);
+  }
+
+  // Sonnen-Animation wie im Dashboard: fliegt beim Hover über den Header ein
+  var headerDeco = document.querySelector('.header-deco');
+  headerDeco.addEventListener('mouseenter', function(){
+    var sw = document.getElementById('sunWrap');
+    if (sw.classList.contains('visible')) return;
+
+    var rect = headerDeco.getBoundingClientRect();
+    var W = rect.width, H = rect.height;
+    var x0 = 6, y0 = H + 22, xEnd = W - 50, yEnd = H / 2;
+    var cx = W * 0.48, cy = -30;
+    var startSize = 22, endSize = 58;
+    var duration = 3200;
+    var startTime = performance.now();
+
+    sw.classList.add('visible');
+
+    function frame(now){
+      var t = Math.min(1, (now - startTime) / duration);
+      var te = t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2;
+      var x = (1-te)*(1-te)*x0 + 2*(1-te)*te*cx + te*te*xEnd;
+      var y = (1-te)*(1-te)*y0 + 2*(1-te)*te*cy + te*te*yEnd;
+      var size = startSize + (endSize - startSize) * te;
+      sw.style.left = (x - size/2) + 'px';
+      sw.style.top = (y - size/2) + 'px';
+      sw.style.width = size + 'px';
+      sw.style.height = size + 'px';
+      if (t < 1){ requestAnimationFrame(frame); }
+      else { sw.classList.add('glow','pulse'); }
+    }
+    requestAnimationFrame(frame);
+  });
+})();
+</script>
+</body>
+</html>
