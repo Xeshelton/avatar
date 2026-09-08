@@ -12,8 +12,8 @@ const MAX_CALL_DURATION_SECONDS = 12 * 60; // Gesprächslimit: 12 Minuten
 
 const TAVUS_API_KEY = process.env.TAVUS_API_KEY;
 // TODO: Platzhalter. Sobald Persona/Replica in Tavus angelegt sind, als Vercel-Umgebungsvariable eintragen.
-const TAVUS_PERSONA_ID = process.env.TAVUS_PERSONA_ID;
-const TAVUS_REPLICA_ID = process.env.TAVUS_REPLICA_ID;
+const TAVUS_PAL_ID = process.env.TAVUS_PAL_ID;
+const TAVUS_FACE_ID = process.env.TAVUS_FACE_ID;
 
 // Zähler: läuft über Upstash Redis (als Vercel-Marketplace-Integration verbunden),
 // weil eine normale Datei auf Vercel nicht dauerhaft gespeichert bleibt
@@ -121,11 +121,11 @@ app.post('/api/start-conversation', requireAuth, async (req, res) => {
 
   // Solange Persona/Replica noch nicht angelegt sind, bleibt es beim Vorschau-Modus.
   // Passwortschutz, Zähler und das Verstecken des API-Schlüssels funktionieren aber schon vollständig echt.
-  if (!TAVUS_PERSONA_ID || !TAVUS_REPLICA_ID) {
+  if (!TAVUS_PAL_ID || !TAVUS_FACE_ID) {
     const conducted = await incrementCounter();
     return res.json({
       status: 'not_configured',
-      message: 'AVADIA ist noch nicht vollständig eingerichtet (Persona/Replica fehlen).',
+      message: 'AVADIA ist noch nicht vollständig eingerichtet (PAL/Face fehlen).',
       conducted
     });
   }
@@ -138,8 +138,8 @@ app.post('/api/start-conversation', requireAuth, async (req, res) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        persona_id: TAVUS_PERSONA_ID,
-        replica_id: TAVUS_REPLICA_ID,
+        pal_id: TAVUS_PAL_ID,
+        face_id: TAVUS_FACE_ID,
         properties: {
           // Feldname bitte gegen die aktuelle Tavus-API-Dokumentation prüfen,
           // Ziel: das Gespräch automatisch nach 12 Minuten beenden.
