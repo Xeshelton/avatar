@@ -146,7 +146,12 @@ app.post('/api/start-conversation', requireAuth, async (req, res) => {
           max_call_duration: MAX_CALL_DURATION_SECONDS,
           // Damit AVADIA von Anfang an auf Deutsch startet, statt dass
           // Testpersonen das im Gespräch manuell umstellen müssen.
-          languages: ['de']
+          languages: ['de'],
+          // Sicherheitsnetz: falls das aktive Beenden (siehe /api/end-conversation)
+          // aus irgendeinem Grund nicht ankommt, läuft das Gespräch trotzdem
+          // spätestens 30 Sekunden nachdem der letzte Teilnehmer weg ist aus,
+          // statt bis zu den vollen 12 Minuten weiterzulaufen (und zu zählen).
+          participant_left_timeout: 30
         }
       })
     });
@@ -158,7 +163,42 @@ app.post('/api/start-conversation', requireAuth, async (req, res) => {
     }
 
     const conducted = await incrementCounter();
-    return res.json({ status: 'ok', conversation_url: data.conversation_url, conducted });
+    return res.json({
+      status: 'ok',
+      conversation_url: data.conversation_url,
+      conversation_id: data.conversation_id,
+      conducted
+    });
+
+  } catch (err) {
+    console.error(err);
+    return res.status(502).json({ status: 'error', message: 'Verbindung zu Tavus ist fehlgeschlagen.' });
+  }
+});
+
+// Aktives Beenden eines Gesprächs: wird aufgerufen, sobald jemand auflegt
+// (egal ob über unseren Button oder den "Leave"-Button im Videofenster),
+// damit Tavus sofort aufhört, Minuten für dieses Gespräch zu zählen,
+// statt bis zum automatischen Timeout weiterzulaufen.
+app.post('/api/end-conversation', requireAuth, async (req, res) => {
+  const conversationId = req.body && req.body.conversation_id;
+
+  if (!TAVUS_API_KEY || !conversationId) {
+    return res.status(400).json({ status: 'error', message: 'conversation_id fehlt.' });
+  }
+
+  try {
+    const tavusResponse = await fetch(`https://tavusapi.com/v2/conversations/${conversationId}/end`, {
+      method: 'POST',
+      headers: { 'x-api-key': TAVUS_API_KEY }
+    });
+
+    if (!tavusResponse.ok && tavusResponse.status !== 204) {
+      const data = await tavusResponse.json().catch(() => ({}));
+      return res.status(502).json({ status: 'error', message: data.message || 'Tavus konnte das Gespräch nicht beenden.' });
+    }
+
+    return res.json({ status: 'ok' });
 
   } catch (err) {
     console.error(err);
