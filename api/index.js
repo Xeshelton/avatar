@@ -11,7 +11,8 @@ const SESSION_SECRET = process.env.SESSION_SECRET;
 const MAX_CALL_DURATION_SECONDS = 12 * 60; // Gesprächslimit: 12 Minuten
 
 const TAVUS_API_KEY = process.env.TAVUS_API_KEY;
-// TODO: Platzhalter. Sobald Persona/Replica in Tavus angelegt sind, als Vercel-Umgebungsvariable eintragen.
+// TODO: Platzhalter. Sobald PAL und Face in Tavus angelegt sind, als Vercel-Umgebungsvariable eintragen.
+// Hinweis: Tavus nennt das inzwischen "PAL" (früher "Persona") und "Face" (früher "Replica").
 const TAVUS_PAL_ID = process.env.TAVUS_PAL_ID;
 const TAVUS_FACE_ID = process.env.TAVUS_FACE_ID;
 
@@ -119,7 +120,7 @@ app.post('/api/start-conversation', requireAuth, async (req, res) => {
     return res.status(500).json({ status: 'error', message: 'TAVUS_API_KEY fehlt in den Vercel-Umgebungsvariablen.' });
   }
 
-  // Solange Persona/Replica noch nicht angelegt sind, bleibt es beim Vorschau-Modus.
+  // Solange PAL/Face noch nicht angelegt sind, bleibt es beim Vorschau-Modus.
   // Passwortschutz, Zähler und das Verstecken des API-Schlüssels funktionieren aber schon vollständig echt.
   if (!TAVUS_PAL_ID || !TAVUS_FACE_ID) {
     const conducted = await incrementCounter();
@@ -141,9 +142,11 @@ app.post('/api/start-conversation', requireAuth, async (req, res) => {
         pal_id: TAVUS_PAL_ID,
         face_id: TAVUS_FACE_ID,
         properties: {
-          // Feldname bitte gegen die aktuelle Tavus-API-Dokumentation prüfen,
           // Ziel: das Gespräch automatisch nach 12 Minuten beenden.
-          max_call_duration: MAX_CALL_DURATION_SECONDS
+          max_call_duration: MAX_CALL_DURATION_SECONDS,
+          // Damit AVADIA von Anfang an auf Deutsch startet, statt dass
+          // Testpersonen das im Gespräch manuell umstellen müssen.
+          languages: ['de']
         }
       })
     });
